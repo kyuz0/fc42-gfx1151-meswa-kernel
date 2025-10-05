@@ -54,9 +54,6 @@ sudo dnf install kernel-devel-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
 ## Verify
 
 ```bash
-uname -r
-# expected: 6.16.10-200.gfx1151_meswa.fc42.x86_64
-
 # check the current default boot entry
 sudo grubby --default-kernel
 
