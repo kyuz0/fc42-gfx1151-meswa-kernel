@@ -1,34 +1,53 @@
 # fc42-gfx1151-meswa-kernel
 
-Temporary Fedora 42 kernel rebuilt with a cherry-picked upstream fix for AMD Strix Halo gfx1151 stability.
+Temporary Fedora 42 kernel rebuilt with a cherry-picked upstream fix for AMD Strix Halo **gfx1151** stability.
 
 * Commit: [https://github.com/torvalds/linux/commit/1fb710793ce2619223adffaf981b1ff13cd48f17](https://github.com/torvalds/linux/commit/1fb710793ce2619223adffaf981b1ff13cd48f17)
 * Tag used: `linux-6.16.10-200.gfx1151_meswa.fc42`
 * More context: [https://github.com/kyuz0/triton_gfx1151_crashes](https://github.com/kyuz0/triton_gfx1151_crashes)
 
+This build integrates that fix ahead of the 6.18 release to improve stability under GPU-heavy workloads such as **llama.cpp**, **PyTorch**, and other compute loads.
+
 ---
 
 ## ⚠️ IMPORTANT: Secure Boot
 
-Disable **Secure Boot** in your firmware **before installing**.
-Unsigned custom kernels will be rejected by Secure Boot.
-If left enabled, the system will either refuse to boot this kernel or silently fall back to a previous one.
+Before installing, **disable Secure Boot** in your firmware (BIOS/UEFI).
+Unsigned custom kernels will be rejected by Secure Boot — if it’s left enabled, the system will either:
+
+* Refuse to boot this kernel, or
+* Silently fall back to another installed kernel.
 
 ---
 
 ## Install
 
-Download the prebuilt RPMs from the [Releases page](https://github.com/kyuz0/fc42-gfx1151-meswa-kernel/releases).
-
-Then install them all at once:
+Download the prebuilt RPMs from the [Releases page](https://github.com/kyuz0/fc42-gfx1151-meswa-kernel/releases/tag/6.16.10-200.gfx1151_meswa.fc42)
+or use the CLI commands below.
 
 ```bash
-# from the directory where you downloaded the RPMs
-sudo dnf install \
-  ./kernel-{core,modules,modules-core,modules-extra,uki-virt,uki-virt-addons}-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
+mkdir fc42-gfx1151-meswa-kernel && cd fc42-gfx1151-meswa-kernel
+
+# download required RPMs
+wget -q https://github.com/kyuz0/fc42-gfx1151-meswa-kernel/releases/download/6.16.10-200.gfx1151_meswa.fc42/kernel-core-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
+wget -q https://github.com/kyuz0/fc42-gfx1151-meswa-kernel/releases/download/6.16.10-200.gfx1151_meswa.fc42/kernel-modules-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
+wget -q https://github.com/kyuz0/fc42-gfx1151-meswa-kernel/releases/download/6.16.10-200.gfx1151_meswa.fc42/kernel-modules-core-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
+wget -q https://github.com/kyuz0/fc42-gfx1151-meswa-kernel/releases/download/6.16.10-200.gfx1151_meswa.fc42/kernel-modules-extra-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
+wget -q https://github.com/kyuz0/fc42-gfx1151-meswa-kernel/releases/download/6.16.10-200.gfx1151_meswa.fc42/kernel-uki-virt-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
+wget -q https://github.com/kyuz0/fc42-gfx1151-meswa-kernel/releases/download/6.16.10-200.gfx1151_meswa.fc42/kernel-uki-virt-addons-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
 ```
 
-(Optionally install `kernel-devel` if you need headers for DKMS or external modules.)
+Then install all downloaded RPMs together:
+
+```bash
+sudo dnf install ./*.rpm
+```
+
+If you also need kernel headers for DKMS or external module builds:
+
+```bash
+sudo dnf install kernel-devel-6.16.10-200.gfx1151_meswa.fc42.x86_64.rpm
+```
 
 ---
 
@@ -38,7 +57,7 @@ sudo dnf install \
 uname -r
 # expected: 6.16.10-200.gfx1151_meswa.fc42.x86_64
 
-# check current default kernel
+# check the current default boot entry
 sudo grubby --default-kernel
 
 # set this kernel as default if needed
@@ -66,6 +85,8 @@ sudo dnf history undo <ID>
 ## Notes
 
 * Built for **Fedora 42 x86_64**.
-* Contains one upstream commit that improves gfx1151 GPU stability under heavy compute workloads (llama.cpp, PyTorch, etc.).
-* Install all provided RPMs together to avoid mixing with Fedora’s kernel subpackages.
+* Contains a single upstream commit addressing **gfx1151** GPU instability.
+* Install all RPMs together to avoid mixing with Fedora’s stock kernel subpackages.
+* Reboot after installation.
+* For further technical discussion or issue tracking, see [triton_gfx1151_crashes](https://github.com/kyuz0/triton_gfx1151_crashes).
 
